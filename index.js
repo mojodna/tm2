@@ -61,7 +61,13 @@ app.param('style', exporting, function(req, res, next) {
         if (err) return next(err);
         if (!tmp) tm.history('style', id);
         req.style = s;
-        return next();
+        req.style._backend.getInfo(function(err, info) {
+            if (err) return next(err);
+
+            req.style._backend.data = info;
+
+            return next();
+        });
     };
     if (req.method === 'PUT') {
         style.save(req.body, done);
